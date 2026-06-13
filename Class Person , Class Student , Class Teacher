@@ -1,0 +1,73 @@
+class Person: # Parent class 
+    def __init__(self , name , person_id , age ):
+        self.name = name
+        self.person_id = person_id
+        self.age = age
+
+    def role(self):
+        return ""
+
+    def display(self):
+        print(f"Name: {self.name} , ID: {self.person_id} , Age: {self.age}")
+
+
+class Student(Person):
+    def __init__(self, name, person_id, age):
+        super().__init__(name, person_id, age)
+
+        self._grades = {}
+
+    def add_grade(self , subject, grade):
+        if subject not in self._grades:
+            self._grades[subject] = []
+        self._grades[subject].append(grade)
+
+    def gpa(self):
+        total = 0
+        count = 0
+        for grades in self._grades.values():
+            for grade in grades:
+                total += grade
+                count += 1
+        if count == 0:
+            return 0
+        return total / count
+    
+    def report_card(self):
+        for subject , grades in self._grades.items():
+            avg = sum(grades) / len(grades)
+            print(subject , avg)
+        print("GPA:" , self.gpa())
+
+
+class Teacher(Person):
+    def __init__(self, name, person_id, age ,subject_taught):
+        super().__init__(name, person_id, age)
+        self.subject_taught = subject_taught
+
+    def role(self):
+        return "Teacher"
+    
+
+# Person Test :
+p1 = Person ("Sarah" , 503 , 24)
+print(p1.role())
+p1.display()
+
+# Student Test :
+
+s1 = Student("Sarah" , 503 , 24)
+s1.add_grade("Math", 90)
+s1.add_grade("Programming" , 100)
+s1.add_grade("Physics" , 98)
+
+print(s1.role())
+s1.display()
+s1.report_card()
+
+# # Teacher Test :
+t1 = Teacher("Ahmed" , 111 , 37 , "Math")
+print(t1.role())
+t1.display()
+
+print(t1.subject_taught)
