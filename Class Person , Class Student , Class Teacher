@@ -14,10 +14,12 @@ class Person: # Parent class
 class Student(Person):
     def __init__(self, name, person_id, age):
         super().__init__(name, person_id, age)
-
         self._grades = {}
 
-    def add_grade(self , subject, grade):
+    def role(self):
+        return "Student"
+
+    def add_grade(self, subject, grade):
         if subject not in self._grades:
             self._grades[subject] = []
         self._grades[subject].append(grade)
@@ -32,7 +34,7 @@ class Student(Person):
         if count == 0:
             return 0
         return total / count
-    
+
     def report_card(self):
         for subject, grades in self._grades.items():
             avg = sum(grades) / len(grades)
@@ -44,24 +46,24 @@ class Student(Person):
 
 
 class Teacher(Person):
-    def __init__(self, name, person_id, age ,subject_taught):
+    def __init__(self, name, person_id, age, subject_taught):
         super().__init__(name, person_id, age)
         self.subject_taught = subject_taught
 
     def role(self):
         return "Teacher"
-    
+
+
 class School:
     def __init__(self):
         self.students = {}
         self.teachers = {}
-        self.subject = set ()
+        self.subjects = set()
 
     def add_student(self, student_obj):
         if student_obj.person_id in self.students:
             print("Error, this number is already registered.")
-            return 
-        
+            return
         self.students[student_obj.person_id] = student_obj
         print(f"Student {student_obj.name} added successfully")
 
@@ -70,47 +72,34 @@ class School:
             print("Error, this number is already registered.")
             return
         self.teachers[teacher_obj.person_id] = teacher_obj
-        self.subject.add(teacher_obj.subject_taught)
-        print(f"Teacher {teacher_obj.name} added for subject : {teacher_obj.subject_taught}.")
+        self.subjects.add(teacher_obj.subject_taught)
+        print(f"Teacher {teacher_obj.name} added for subject: {teacher_obj.subject_taught}.")
+
     def record_grade(self, student_id, subject, grade):
         if student_id not in self.students:
             print("Error student not found")
             return
-        if subject not in self.subject:
+        if subject not in self.subjects:
             print(f"Error: Subject {subject} is not taught in this school")
             return
-        
         if grade < 0 or grade > 100:
             raise ValueError("Grade out of range (must be 0-100)")
         self.students[student_id].add_grade(subject, grade)
         print(f"Grade {grade} recorded for student ID {student_id} in {subject}")
-        if grade < 0 or grade > 100:
-            raise ValueError("Grade out of range (must be 0-100)")
         
-        self.students[student_id].add_grade(subject, grade)
-        print(f"Grade {grade} recorded for student ID {student_id} in {subject}")
-
     def class_average(self, subject):
         total = 0
         count = 0
-        
         for student in self.students.values():
-            if hasattr(student, 'grades') and subject in student.grades:
-                if isinstance(student.grades[subject], list):
-                    for g in student.grades[subject]:
-                        total += g
-                        count += 1
-                else:
-                    total += student.grades[subject]
+            if subject in student._grades:
+                for g in student._grades[subject]:
+                    total += g
                     count += 1
-
         if count == 0:
             print(f"No grades found for '{subject}'.")
             return
-            
         avg = total / count
         print(f"Class average for {subject}: {avg:.2f}")
-
 
 def letter_grade(score):
 
@@ -160,7 +149,6 @@ def main():
     school = School()
 
     while True:
-
         print("\n===== SCHOOL GRADE TRACKER =====")
         print("1. Add Student")
         print("2. Add Teacher")
@@ -187,7 +175,7 @@ def main():
 
             except ValueError:
 
-                print(" Invalid input")
+                print("Invalid input")
 
         elif choice == "2":
 
@@ -241,11 +229,11 @@ def main():
 
                 else:
 
-                    print(" Student not found")
+                    print("Student not found")
 
             except ValueError:
 
-                print(" Invalid ID")
+                print("Invalid ID")
 
         elif choice == "5":
 
@@ -266,7 +254,7 @@ def main():
 
             except ValueError:
 
-                print(" Invalid score")
+                print("Invalid score")
 
         elif choice == "7":
 
@@ -274,14 +262,12 @@ def main():
 
         elif choice == "8":
 
-            print(" Goodbye!")
+            print("Goodbye!")
             break
 
         else:
 
-            print(" Invalid choice")
+            print("Invalid choice")
 
 
 main()
-
-
