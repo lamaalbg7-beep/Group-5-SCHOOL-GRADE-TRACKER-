@@ -34,10 +34,13 @@ class Student(Person):
         return total / count
     
     def report_card(self):
-        for subject , grades in self._grades.items():
+        for subject, grades in self._grades.items():
             avg = sum(grades) / len(grades)
-            print(subject , avg)
-        print("GPA:" , self.gpa())
+            letter = letter_grade(avg)
+            print(f"{subject}: {avg:.2f} ({letter})")
+
+        gpa_value = self.gpa()
+        print(f"GPA: {gpa_value:.2f} Letter: {letter_grade(gpa_value)}")
 
 
 class Teacher(Person):
@@ -107,5 +110,178 @@ class School:
             
         avg = total / count
         print(f"Class average for {subject}: {avg:.2f}")
+
+
+def letter_grade(score):
+
+    match score:
+
+        case s if s >= 90:
+            return "A"
+
+        case s if s >= 80:
+            return "B"
+
+        case s if s >= 70:
+            return "C"
+
+        case s if s >= 60:
+            return "D"
+
+        case _:
+            return "F"
+
+
+def sort_by_gpa(school):
+
+    ranking = []
+
+    for student in school.students.values():
+
+        ranking.append(
+            (
+                student.gpa(),
+                student.name,
+                student.person_id
+            )
+        )
+
+    ranking = sorted(ranking, reverse=True)
+
+    print("\nStudents Ranked By GPA:")
+
+    for gpa, name, sid in ranking:
+
+        print(f"ID: {sid} | Name: {name} | GPA: {gpa:.2f}")
+
+
+def main():
+
+    school = School()
+
+    while True:
+
+        print("\n===== SCHOOL GRADE TRACKER =====")
+        print("1. Add Student")
+        print("2. Add Teacher")
+        print("3. Record Grade")
+        print("4. Student Report Card")
+        print("5. Class Average")
+        print("6. Convert Numeric To Letter Grade")
+        print("7. Show Students Sorted By GPA")
+        print("8. Exit")
+
+        choice = input("Choose (1-8): ").strip()
+
+        if choice == "1":
+
+            try:
+
+                name = input("Student Name: ")
+                person_id = int(input("Student ID: "))
+                age = int(input("Age: "))
+
+                student = Student(name, person_id, age)
+
+                school.add_student(student)
+
+            except ValueError:
+
+                print(" Invalid input")
+
+        elif choice == "2":
+
+            try:
+
+                name = input("Teacher Name: ")
+                person_id = int(input("Teacher ID: "))
+                age = int(input("Age: "))
+                subject = input("Subject: ")
+
+                teacher = Teacher(
+                    name,
+                    person_id,
+                    age,
+                    subject
+                )
+
+                school.add_teacher(teacher)
+
+            except ValueError:
+
+                print(" Invalid input")
+
+        elif choice == "3":
+
+            try:
+
+                sid = int(input("Student ID: "))
+                subject = input("Subject: ")
+                grade = float(input("Grade (0-100): "))
+
+                school.record_grade(
+                    sid,
+                    subject,
+                    grade
+                )
+
+            except ValueError as e:
+
+                print(e)
+
+        elif choice == "4":
+
+            try:
+
+                sid = int(input("Student ID: "))
+
+                if sid in school.students:
+
+                    school.students[sid].report_card()
+
+                else:
+
+                    print(" Student not found")
+
+            except ValueError:
+
+                print(" Invalid ID")
+
+        elif choice == "5":
+
+            subject = input("Subject: ")
+
+            school.class_average(subject)
+
+        elif choice == "6":
+
+            try:
+
+                score = float(input("Enter score: "))
+
+                print(
+                    "Letter Grade:",
+                    letter_grade(score)
+                )
+
+            except ValueError:
+
+                print(" Invalid score")
+
+        elif choice == "7":
+
+            sort_by_gpa(school)
+
+        elif choice == "8":
+
+            print(" Goodbye!")
+            break
+
+        else:
+
+            print(" Invalid choice")
+
+
+main()
 
 
