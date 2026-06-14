@@ -77,13 +77,75 @@ class School:
             print(f"Error: Subject {subject} is not taught in this school")
             return
         
+        if grade < 0 or grade > 100:
+            raise ValueError("Grade out of range (must be 0-100)")
+        self.students[student_id].add_grade(subject, grade)
+        print(f"Grade {grade} recorded for student ID {student_id} in {subject}")
+        if grade < 0 or grade > 100:
+            raise ValueError("Grade out of range (must be 0-100)")
+        
         self.students[student_id].add_grade(subject, grade)
         print(f"Grade {grade} recorded for student ID {student_id} in {subject}")
 
-    def class_average(self):
-        if not self.students:
-            return 0 
-        total_gpa = 0
-        for student_obj in self.students.values():
-            total_gpa += student_obj.gpa()
-        return total_gpa / len(self.students)  
+    def class_average(self, subject):
+        total = 0
+        count = 0
+        
+        for student in self.students.values():
+            if hasattr(student, 'grades') and subject in student.grades:
+                if isinstance(student.grades[subject], list):
+                    for g in student.grades[subject]:
+                        total += g
+                        count += 1
+                else:
+                    total += student.grades[subject]
+                    count += 1
+
+        if count == 0:
+            print(f"No grades found for '{subject}'.")
+            return
+            
+        avg = total / count
+        print(f"Class average for {subject}: {avg:.2f}")
+
+def letter_grade(score):
+
+    match score:
+
+        case s if s >= 90:
+            return "A"
+
+        case s if s >= 80:
+            return "B"
+
+        case s if s >= 70:
+            return "C"
+
+        case s if s >= 60:
+            return "D"
+
+        case _:
+            return "F"
+
+
+def sort_by_gpa(school):
+
+    ranking = []
+
+    for student in school.students.values():
+
+        ranking.append(
+            (
+                student.gpa(),
+                student.name,
+                student.person_id
+            )
+        )
+
+    ranking = sorted(ranking, reverse=True)
+
+    print("\nStudents Ranked By GPA:")
+
+    for gpa, name, sid in ranking:
+
+        print(f"ID: {sid} | Name: {name} | GPA: {gpa:.2f}")
