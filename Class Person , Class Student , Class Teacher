@@ -48,26 +48,42 @@ class Teacher(Person):
     def role(self):
         return "Teacher"
     
+class School:
+    def __init__(self):
+        self.students = {}
+        self.teachers = {}
+        self.subject = set ()
 
-# Person Test :
-p1 = Person ("Sarah" , 503 , 24)
-print(p1.role())
-p1.display()
+    def add_student(self, student_obj):
+        if student_obj.person_id in self.students:
+            print("Error, this number is already registered.")
+            return 
+        
+        self.students[student_obj.person_id] = student_obj
+        print(f"Student {student_obj.name} added successfully")
 
-# Student Test :
+    def add_teacher(self, teacher_obj):
+        if teacher_obj.person_id in self.teachers:
+            print("Error, this number is already registered.")
+            return
+        self.teachers[teacher_obj.person_id] = teacher_obj
+        self.subject.add(teacher_obj.subject_taught)
+        print(f"Teacher {teacher_obj.name} added for subject : {teacher_obj.subject_taught}.")
+    def record_grade(self, student_id, subject, grade):
+        if student_id not in self.students:
+            print("Error student not found")
+            return
+        if subject not in self.subject:
+            print(f"Error: Subject {subject} is not taught in this school")
+            return
+        
+        self.students[student_id].add_grade(subject, grade)
+        print(f"Grade {grade} recorded for student ID {student_id} in {subject}")
 
-s1 = Student("Sarah" , 503 , 24)
-s1.add_grade("Math", 90)
-s1.add_grade("Programming" , 100)
-s1.add_grade("Physics" , 98)
-
-print(s1.role())
-s1.display()
-s1.report_card()
-
-# # Teacher Test :
-t1 = Teacher("Ahmed" , 111 , 37 , "Math")
-print(t1.role())
-t1.display()
-
-print(t1.subject_taught)
+    def class_average(self):
+        if not self.students:
+            return 0 
+        total_gpa = 0
+        for student_obj in self.students.values():
+            total_gpa += student_obj.gpa()
+        return total_gpa / len(self.students)  
