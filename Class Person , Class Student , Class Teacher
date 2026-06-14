@@ -108,44 +108,4 @@ class School:
         avg = total / count
         print(f"Class average for {subject}: {avg:.2f}")
 
-def letter_grade(score):
 
-    match score:
-
-        case s if s >= 90:
-            return "A"
-
-        case s if s >= 80:
-            return "B"
-
-        case s if s >= 70:
-            return "C"
-
-        case s if s >= 60:
-            return "D"
-
-        case _:
-            return "F"
-
-
-def sort_by_gpa(school):
-
-    ranking = []
-
-    for student in school.students.values():
-
-        ranking.append(
-            (
-                student.gpa(),
-                student.name,
-                student.person_id
-            )
-        )
-
-    ranking = sorted(ranking, reverse=True)
-
-    print("\nStudents Ranked By GPA:")
-
-    for gpa, name, sid in ranking:
-
-        print(f"ID: {sid} | Name: {name} | GPA: {gpa:.2f}")
